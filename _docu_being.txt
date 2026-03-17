@@ -1,0 +1,27 @@
+_docu_being.txt
+
+
+local:
+/being/frontend/
+     npm create vite@latest   <-- template vanilla
+/being/backend
+     npm init -y              <-- express server
+.gitignore                    <-- set node_modules en .env
+Dockerfile
+
+
+
+
+
+
+github: chrit-cgi / chrit@cgintelligence.eu
+
+  needs to run in main directory being:
+      git init                                  (maakt een lokale Git opslag aan)
+      git add .                                 (voegt al je bestanden toe)  
+      git commit -m "first version"             (geeft de wijziging een naam)
+      git remote add origin [JOUW_GITHUB_URL ]
+      git push -u origin main                   (stuurt het naar de cloud)
+
+
+web server at Sliplane
