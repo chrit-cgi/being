@@ -6,6 +6,7 @@ local:
      npm create vite@latest   <-- template vanilla, namne it frontend
 /being/backend
      npm init -y              <-- express server
+     npm install express pg
 .gitignore                    <-- set node_modules en .env
 Dockerfile
 

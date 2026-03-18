@@ -6,18 +6,22 @@ RUN npm install
 COPY frontend/ ./
 RUN npm run build
 
-# STAP 2: Zet de Backend (Node.js) klaar
+# STAP 2: Zet de Backend klaar
 FROM node:20-alpine
 WORKDIR /app
-COPY backend/package*.json ./
-RUN npm install --production
-COPY backend/ ./
 
-# STAP 3: Combineer alles
-# Kopieer de gebouwde frontend bestanden naar de public map van de backend
+# Kopieer package files van de backend naar de huidige map (/app)
+COPY backend/package*.json ./
+
+# Installeer de modules DIRECT in /app
+RUN npm install --production
+
+# Kopieer de rest van de backend code naar /app
+COPY backend/ .
+
+# STAP 3: Combineer frontend
+# Zorg dat de frontend 'dist' in de 'public' map van de backend komt
 COPY --from=build-frontend /app/frontend/dist ./public
 
-# Start de server
 EXPOSE 3000
 CMD ["node", "index.js"]
-

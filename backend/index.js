@@ -31,7 +31,8 @@ app.get('/api/status', async (req, res) => {
 });
 
 // 3. Zorg dat alle andere routes de frontend laden (belangrijk voor Single Page Apps)
-app.get('*', (req, res) => {
+// NIEUWE MANIER (Express 5)
+app.get('(.*)', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
