@@ -10,5 +10,9 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "start": "node index.js"
+  "start": "node index.js",
+  "dependencies": {
+    "express": "^5.2.1",
+    "pg": "^8.20.0"
+  }
 }
