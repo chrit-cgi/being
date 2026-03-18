@@ -8,9 +8,8 @@ const port = process.env.PORT || 3000;
 // Database configuratie (gebruikt de Sliplane Environment Variable)
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false // Nodig voor veel cloud-databases
-  }
+  // Alleen SSL gebruiken als we NIET met een .internal adres praten
+  ssl: process.env.DATABASE_URL.includes('.internal') ? false : { rejectUnauthorized: false }
 });
 
 // 1. Serveer de statische bestanden uit de 'public' map (deze wordt door de Dockerfile gevuld)
