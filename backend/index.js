@@ -9,7 +9,9 @@ const port = process.env.PORT || 3000;
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   // Alleen SSL gebruiken als we NIET met een .internal adres praten
-  ssl: process.env.DATABASE_URL.includes('.internal') ? false : { rejectUnauthorized: false }
+  // ssl: process.env.DATABASE_URL.includes('.internal') ? false : { rejectUnauthorized: false }
+  // but this does not work on sliplane, so:
+  ssl: false
 });
 
 // 1. Serveer de statische bestanden uit de 'public' map (deze wordt door de Dockerfile gevuld)
