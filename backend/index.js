@@ -19,14 +19,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 // 2. Een API endpoint om de database verbinding te testen
 app.get('/api/status', async (req, res) => {
   try {
+    console.log("Poging tot verbinden met DB...");
     const dbRes = await pool.query('SELECT NOW() as nu');
+    console.log("DB verbinding succesvol!");
     res.json({ 
       status: 'success', 
-      message: 'Backend is online!', 
       dbTime: dbRes.rows[0].nu 
     });
   } catch (err) {
-    res.status(500).json({ status: 'error', message: err.message });
+    // We loggen de VOLLEDIGE fout in de Sliplane logs
+    console.error("DATABASE FOUT:", err); 
+    
+    // We sturen meer info terug naar de browser console
+    res.status(500).json({ 
+      status: 'error', 
+      message: err.message || "Onbekende fout",
+      stack: err.stack 
+    });
   }
 });
 

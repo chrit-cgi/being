@@ -28,3 +28,6 @@ github: chrit-cgi / chrit@cgintelligence.eu
       
 
 web server at Sliplane
+
+- services activeren
+- database url (uit internal settings) toevoegen bij setiings
