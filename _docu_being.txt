@@ -2,8 +2,8 @@ _docu_being.txt
 
 
 local:
-/being/frontend/
-     npm create vite@latest   <-- template vanilla
+/being
+     npm create vite@latest   <-- template vanilla, namne it frontend
 /being/backend
      npm init -y              <-- express server
 .gitignore                    <-- set node_modules en .env
@@ -20,8 +20,10 @@ github: chrit-cgi / chrit@cgintelligence.eu
       git init                                  (maakt een lokale Git opslag aan)
       git add .                                 (voegt al je bestanden toe)  
       git commit -m "first version"             (geeft de wijziging een naam)
-      git remote add origin [JOUW_GITHUB_URL ]
-      git push -u origin main                   (stuurt het naar de cloud)
+      git remote add origin https://github.com/chrit-cgi/main     (alleen voor nieuw)
+      git push -u origin main                   (stuurt het naar de cloud: token needed)
 
+      git config --global credential.helper cache   (houdt token in memory)
+      
 
 web server at Sliplane
