@@ -11,28 +11,48 @@
 </head>
 <body>
     <div class="card">
-        <h1>Winterswijk Data App</h1>
-        <p>Status: <span id="status">Laden...</span></p>
-        <p id="db-info"></p>
+        <h1>Winterswijk Atlas Beheer</h1>
+        
+        <form id="docForm">
+            <input type="text" id="titel" placeholder="Titel van document" required>
+            <textarea id="inhoud" placeholder="Inhoud..."></textarea>
+            <button type="submit">Opslaan in Postgres</button>
+        </form>
+
+        <hr>
+        <h3>Opgeslagen Documenten:</h3>
+        <ul id="documentenLijst"></ul>
     </div>
 
     <script type="module">
-        // We roepen onze eigen Node.js API aan
-        async function checkStatus() {
-            try {
-                const response = await fetch('/api/status');
-                const data = await response.json();
-                
-                if (data.status === 'success') {
-                    document.getElementById('status').innerText = data.message;
-                    document.getElementById('db-info').innerText = 'Database tijd: ' + data.dbTime;
-                }
-            } catch (error) {
-                document.getElementById('status').innerText = 'Fout bij verbinden!';
-                document.getElementById('status').style.color = 'red';
-            }
+        const form = document.getElementById('docForm');
+        const lijst = document.getElementById('documentenLijst');
+
+        // Functie om lijst te verversen
+        async function laadDocumenten() {
+            const res = await fetch('/api/documenten');
+            const docs = await res.json();
+            lijst.innerHTML = docs.map(d => `<li><strong>${d.titel}</strong>: ${d.inhoud}</li>`).join('');
         }
-        checkStatus();
+
+        // Formulier versturen
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = { 
+                titel: document.getElementById('titel').value, 
+                inhoud: document.getElementById('inhoud').value 
+            };
+            
+            await fetch('/api/documenten', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            form.reset();
+            laadDocumenten();
+        });
+
+        laadDocumenten(); // Start direct met laden
     </script>
 </body>
-</html>

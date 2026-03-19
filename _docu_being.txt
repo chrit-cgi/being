@@ -34,9 +34,5 @@ web server at Sliplane
 
   postgres://[user]:[pass]@[internal endpoint]/[dbname]
 
-postgres-qon3.sliplane.app:5432
-mydb
-JvlXP3Cy6Mv10det
-postgres
 
-postgress://postgres:JvlXP3Cy6Mv10det@postgres-qon3.sliplane.app:5432
+een aantal zaken opgeslagen in ~/.git-credentials

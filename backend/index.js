@@ -14,6 +14,33 @@ const pool = new Pool({
   ssl: false
 });
 
+app.use(express.json()); // Nodig om formulier-data te kunnen lezen
+
+// Route om alle documenten op te halen
+app.get('/api/documenten', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM documenten ORDER BY datum_toegevoegd DESC');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Route om een nieuw document op te slaan
+app.post('/api/documenten', async (req, res) => {
+  const { titel, inhoud } = req.body;
+  try {
+    const result = await pool.query(
+      'INSERT INTO documenten (titel, inhoud) VALUES ($1, $2) RETURNING *',
+      [titel, inhoud]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 // 1. Serveer de statische bestanden uit de 'public' map (deze wordt door de Dockerfile gevuld)
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -46,6 +73,17 @@ app.get('/api/status', async (req, res) => {
 app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
+// Tabel aanmaken als deze nog niet bestaat
+pool.query(`
+  CREATE TABLE IF NOT EXISTS documenten (
+    id SERIAL PRIMARY KEY,
+    titel VARCHAR(255) NOT NULL,
+    inhoud TEXT,
+    datum_toegevoegd TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
+`).then(() => console.log("Tabel 'documenten' is klaar voor gebruik!"))
+  .catch(err => console.error("Fout bij aanmaken tabel:", err));
 
 app.listen(port, () => {
   console.log(`Server draait op poort ${port}`);
