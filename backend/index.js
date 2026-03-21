@@ -1,90 +1,68 @@
 const express = require('express');
 const { Pool } = require('pg');
-const path = require('path');
+const fetch = require('node-fetch'); // Required for Node < 18, built-in for Node 18+
 
 const app = express();
-const port = process.env.PORT || 3000;
+app.use(express.json());
 
-// Database configuratie (gebruikt de Sliplane Environment Variable)
+// Configure Postgres connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  // Alleen SSL gebruiken als we NIET met een .internal adres praten
-  // ssl: process.env.DATABASE_URL.includes('.internal') ? false : { rejectUnauthorized: false }
-  // but this does not work on sliplane, so:
-  ssl: false
+  ssl: false // Set to false for internal Sliplane networking
 });
 
-app.use(express.json()); // Nodig om formulier-data te kunnen lezen
+/**
+ * AUTH MIDDLEWARE (The Bouncer)
+ * Validates the PocketBase token before allowing access to calculations.
+ */
+async function authenticateUser(req, res, next) {
+  const token = req.headers.authorization;
 
-// Route om alle documenten op te halen
-// app.get('/api/documenten', async (req, res) => {
-//  try {
-//    const result = await pool.query('SELECT * FROM documenten ORDER BY datum_toegevoegd DESC');
-//    res.json(result.rows);
-//  } catch (err) {
-//    res.status(500).json({ error: err.message });
-//  }
-// });
+  if (!token) {
+    return res.status(401).json({ error: "No token provided. Please log in." });
+  }
 
-// Route om een nieuw document op te slaan
-app.post('/api/documenten', async (req, res) => {
-  const { titel, inhoud } = req.body;
   try {
-    const result = await pool.query(
-      'INSERT INTO documenten (titel, inhoud) VALUES ($1, $2) RETURNING *',
-      [titel, inhoud]
-    );
-    res.json(result.rows[0]);
+    // Verify token by calling the PocketBase internal API
+    const authCheck = await fetch('http://127.0.0.1:8090/api/collections/users/auth-refresh', {
+      method: 'POST',
+      headers: { 'Authorization': token }
+    });
+
+    if (!authCheck.ok) throw new Error("Invalid session");
+
+    const data = await authCheck.json();
+    req.user = data.record; // Store user profile (ID, email) in the request object
+    next(); // Proceed to the calculation route
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(401).json({ error: "Session expired or invalid." });
+  }
+}
+
+/**
+ * CALCULATION ROUTE
+ * Perform complex analysis and store results in Postgres.
+ */
+app.post('/api/calculate', authenticateUser, async (req, res) => {
+  const { valueA, valueB } = req.body;
+  const userId = req.user.id;
+
+  try {
+    // Example logic: complex calculation or analysis
+    const result = parseFloat(valueA) * parseFloat(valueB);
+
+    // Save result to Postgres, linked to the unique PocketBase User ID
+    await pool.query(
+      'INSERT INTO user_calculations (user_id, input_data, result) VALUES ($1, $2, $3)',
+      [userId, JSON.stringify(req.body), result]
+    );
+
+    res.json({ success: true, result });
+  } catch (err) {
+    console.error("DB Error:", err);
+    res.status(500).json({ error: "Calculation failed in the database." });
   }
 });
 
-
-// 1. Serveer de statische bestanden uit de 'public' map (deze wordt door de Dockerfile gevuld)
-// app.use(express.static(path.join(__dirname, 'public')));
-
-// 2. Een API endpoint om de database verbinding te testen
-// app.get('/api/status', async (req, res) => {
-//  try {
-//    console.log("Poging tot verbinden met DB...");
-//    const dbRes = await pool.query('SELECT NOW() as nu');
-//    console.log("DB verbinding succesvol!");
-//    res.json({ 
-//      status: 'success', 
-//      dbTime: dbRes.rows[0].nu 
-//    });
-//  } catch (err) {
-//    // We loggen de VOLLEDIGE fout in de Sliplane logs
-//    console.error("DATABASE FOUT:", err); 
-//    
-//    // We sturen meer info terug naar de browser console
-//    res.status(500).json({ 
-//     status: 'error', 
-//      message: err.message || "Onbekende fout",
-//      stack: err.stack 
-//    });
-//  }
-// });
-
-// 3. Zorg dat alle andere routes de frontend laden (belangrijk voor Single Page Apps)
-// NIEUWE MANIER (Express 5)
-// Gebruik een reguliere expressie direct, zonder aanhalingstekens
-// app.get(/.*/, (req, res) => {
-//   res.sendFile(path.join(__dirname, 'public', 'index.html'));
-// });
-
-// Tabel aanmaken als deze nog niet bestaat
-pool.query(`
-  CREATE TABLE IF NOT EXISTS documenten (
-    id SERIAL PRIMARY KEY,
-    titel VARCHAR(255) NOT NULL,
-    inhoud TEXT,
-    datum_toegevoegd TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  );
-`).then(() => console.log("Tabel 'documenten' is klaar voor gebruik!"))
-  .catch(err => console.error("Fout bij aanmaken tabel:", err));
-
-app.listen(port, () => {
-  console.log(`Server draait op poort ${port}`);
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Backend Engine running on port ${PORT}`));
