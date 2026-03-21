@@ -1,58 +1,70 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Mijn Sliplane App</title>
+    <title>Winterswijk Atlas - Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/pocketbase/dist/pocketbase.umd.js"></script>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; background: #f0f2f5; }
-        .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        #status { font-weight: bold; color: green; }
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; }
+        .auth-card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; width: 300px; }
+        input { width: 100%; margin: 10px 0; padding: 10px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; cursor: pointer; background: #007bff; color: white; border: none; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>Winterswijk Atlas Beheer</h1>
-        
-        <form id="docForm">
-            <input type="text" id="titel" placeholder="Titel van document" required>
-            <textarea id="inhoud" placeholder="Inhoud..."></textarea>
-            <button type="submit">Opslaan in Postgres</button>
-        </form>
 
-        <hr>
-        <h3>Opgeslagen Documenten:</h3>
-        <ul id="documentenLijst"></ul>
+<div class="auth-card">
+    <h2>Winterswijk Login</h2>
+    
+    <div id="step-email">
+        <input type="email" id="email" placeholder="Enter your email" required>
+        <button onclick="requestOTP()">Send Login Code</button>
     </div>
 
-    <script type="module">
-        const form = document.getElementById('docForm');
-        const lijst = document.getElementById('documentenLijst');
+    <div id="step-otp" class="hidden">
+        <p>Enter the 6-digit code sent to your email.</p>
+        <input 
+            type="text" 
+            id="otp" 
+            inputmode="numeric" 
+            pattern="[0-9]*" 
+            autocomplete="one-time-code" 
+            placeholder="000000"
+        >
+        <button onclick="verifyOTP()">Verify & Login</button>
+    </div>
+</div>
 
-        // Functie om lijst te verversen
-        async function laadDocumenten() {
-            const res = await fetch('/api/documenten');
-            const docs = await res.json();
-            lijst.innerHTML = docs.map(d => `<li><strong>${d.titel}</strong>: ${d.inhoud}</li>`).join('');
+<script>
+    const pb = new PocketBase('http://' + window.location.hostname + ':8090');
+
+    async function requestOTP() {
+        const email = document.getElementById('email').value;
+        try {
+            // This triggers the email from PocketBase
+            await pb.collection('users').requestOTP(email);
+            document.getElementById('step-email').classList.add('hidden');
+            document.getElementById('step-otp').classList.remove('hidden');
+            alert("Check your email!");
+        } catch (err) {
+            alert("Error: " + err.message);
         }
+    }
 
-        // Formulier versturen
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const data = { 
-                titel: document.getElementById('titel').value, 
-                inhoud: document.getElementById('inhoud').value 
-            };
-            
-            await fetch('/api/documenten', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            
-            form.reset();
-            laadDocumenten();
-        });
+    async function verifyOTP() {
+        const email = document.getElementById('email').value;
+        const code = document.getElementById('otp').value;
+        try {
+            const authData = await pb.collection('users').authWithOTP(email, code);
+            alert("Logged in as: " + authData.record.email);
+            // After login, you can now call your Node.js API on port 3000
+            // sending authData.token in the headers!
+        } catch (err) {
+            alert("Invalid code.");
+        }
+    }
+</script>
 
-        laadDocumenten(); // Start direct met laden
-    </script>
 </body>
+</html>
