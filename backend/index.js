@@ -17,14 +17,14 @@ const pool = new Pool({
 app.use(express.json()); // Nodig om formulier-data te kunnen lezen
 
 // Route om alle documenten op te halen
-app.get('/api/documenten', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM documenten ORDER BY datum_toegevoegd DESC');
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// app.get('/api/documenten', async (req, res) => {
+//  try {
+//    const result = await pool.query('SELECT * FROM documenten ORDER BY datum_toegevoegd DESC');
+//    res.json(result.rows);
+//  } catch (err) {
+//    res.status(500).json({ error: err.message });
+//  }
+// });
 
 // Route om een nieuw document op te slaan
 app.post('/api/documenten', async (req, res) => {
@@ -42,37 +42,37 @@ app.post('/api/documenten', async (req, res) => {
 
 
 // 1. Serveer de statische bestanden uit de 'public' map (deze wordt door de Dockerfile gevuld)
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
 // 2. Een API endpoint om de database verbinding te testen
-app.get('/api/status', async (req, res) => {
-  try {
-    console.log("Poging tot verbinden met DB...");
-    const dbRes = await pool.query('SELECT NOW() as nu');
-    console.log("DB verbinding succesvol!");
-    res.json({ 
-      status: 'success', 
-      dbTime: dbRes.rows[0].nu 
-    });
-  } catch (err) {
-    // We loggen de VOLLEDIGE fout in de Sliplane logs
-    console.error("DATABASE FOUT:", err); 
-    
-    // We sturen meer info terug naar de browser console
-    res.status(500).json({ 
-      status: 'error', 
-      message: err.message || "Onbekende fout",
-      stack: err.stack 
-    });
-  }
-});
+// app.get('/api/status', async (req, res) => {
+//  try {
+//    console.log("Poging tot verbinden met DB...");
+//    const dbRes = await pool.query('SELECT NOW() as nu');
+//    console.log("DB verbinding succesvol!");
+//    res.json({ 
+//      status: 'success', 
+//      dbTime: dbRes.rows[0].nu 
+//    });
+//  } catch (err) {
+//    // We loggen de VOLLEDIGE fout in de Sliplane logs
+//    console.error("DATABASE FOUT:", err); 
+//    
+//    // We sturen meer info terug naar de browser console
+//    res.status(500).json({ 
+//     status: 'error', 
+//      message: err.message || "Onbekende fout",
+//      stack: err.stack 
+//    });
+//  }
+// });
 
 // 3. Zorg dat alle andere routes de frontend laden (belangrijk voor Single Page Apps)
 // NIEUWE MANIER (Express 5)
 // Gebruik een reguliere expressie direct, zonder aanhalingstekens
-app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+// app.get(/.*/, (req, res) => {
+//   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// });
 
 // Tabel aanmaken als deze nog niet bestaat
 pool.query(`
