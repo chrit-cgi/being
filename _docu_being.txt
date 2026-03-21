@@ -52,3 +52,8 @@ being/
 │   └── package.json
 └── public/             
     └── index.html      <-- (Your frontend files)
+
+
+Using sliplane means: 
+https://main.sliplane.app/_/
+is needed for starting PocketBase in this container: Admin account has to be made
