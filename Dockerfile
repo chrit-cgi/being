@@ -1,6 +1,3 @@
-# Voeg deze regel tijdelijk toe om de cache te breken
-ARG CACHEBUST=1
-
 # STEP 1: Use Node.js as the base image
 FROM node:20-alpine
 
@@ -55,10 +52,6 @@ stderr_logfile_maxbytes=0\n\
 # Expose both ports
 EXPOSE 8090 3000
 
-
-# We voegen een commando toe dat EERST de data weggooit en DAN pas supervisor start.
-# Let op: Doe dit maar ÉÉN KEER. Zodra je weer in de Admin kunt, haal je dit weer weg.
-CMD sh -c "rm -rf /pb/pb_data/* && /usr/bin/supervisord -c /etc/supervisord.conf"
 
 # Start Supervisor to launch both services
 # CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
