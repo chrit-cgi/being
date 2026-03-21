@@ -1,6 +1,6 @@
 const express = require('express');
 const { Pool } = require('pg');
-const fetch = require('node-fetch'); // Required for Node < 18, built-in for Node 18+
+// const fetch = require('node-fetch'); // Required for Node < 18, built-in for Node 18+
 
 const app = express();
 app.use(express.json());
