@@ -1,3 +1,7 @@
+# Voeg deze regel tijdelijk toe om de cache te breken
+ARG CACHEBUST=1
+
+
 # STEP 1: Use Node.js as the base image
 FROM node:20-alpine
 
