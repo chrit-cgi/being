@@ -45,3 +45,10 @@ en dan
 git live "actueel commentaar"
 
 
+being/
+├── Dockerfile          <-- (Must be in the root)
+├── backend/            <-- (Contains index.js and package.json)
+│   ├── index.js
+│   └── package.json
+└── public/             
+    └── index.html      <-- (Your frontend files)

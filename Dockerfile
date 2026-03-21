@@ -20,7 +20,7 @@ RUN npm install --production
 COPY backend/ .
 
 # STEP 4: Setup Frontend (Static files served by PocketBase)
-COPY frontend/ /pb/pb_public/
+COPY public/ /pb/pb_public/
 
 # STEP 5: Configure Supervisor to run both processes
 # The [supervisord] section is mandatory for the manager to start.
