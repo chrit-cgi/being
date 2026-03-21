@@ -20,7 +20,7 @@ RUN npm install --production
 COPY backend/ .
 
 # STEP 4: Setup Frontend (Static files served by PocketBase)
-COPY public/ /pb/pb_public/
+COPY frontend/ /pb/pb_public/
 
 # STEP 5: Configure Supervisor
 # This configures Supervisor to start and monitor both PB and Node apps.
