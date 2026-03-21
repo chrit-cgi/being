@@ -37,7 +37,11 @@
 </div>
 
 <script>
-    const pb = new PocketBase('http://' + window.location.hostname + ':8090');
+    //// const pb = new PocketBase('http://' + window.location.hostname + ':8090');
+    // This detects if you are on Sliplane (HTTPS) or Local (HTTP) 
+    // and removes the port 8090 if you are using Sliplane's main URL.
+    
+    const pb = new PocketBase(window.location.origin);
 
     async function requestOTP() {
         const email = document.getElementById('email').value;
