@@ -55,5 +55,8 @@ stderr_logfile_maxbytes=0\n\
 # Expose both ports
 EXPOSE 8090 3000
 
+# TEMPORARY: Wipe the existing data to allow a fresh admin setup
+RUN rm -rf /pb/pb_data/*
+
 # Start Supervisor to launch both services
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
