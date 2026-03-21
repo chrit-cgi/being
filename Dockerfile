@@ -32,7 +32,7 @@ logfile=/dev/stdout\n\
 logfile_maxbytes=0\n\
 \n\
 [program:pocketbase]\n\
-command=/pb/pocketbase serve --http=0.0.0.0:8090 --dir=/pb/pb_data --publicDir=/pb/pb_public\n\
+command=/pb/pocketbase serve --http=0.0.0.0:8090 --dir=/pb/pb_data_v0 --publicDir=/pb/pb_public\n\
 autostart=true\n\
 autorestart=true\n\
 stdout_logfile=/dev/stdout\n\
