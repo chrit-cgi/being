@@ -54,4 +54,4 @@ EXPOSE 8090 3000
 
 
 # Start Supervisor to launch both services
-# CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
