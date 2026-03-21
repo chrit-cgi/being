@@ -22,11 +22,33 @@ COPY backend/ .
 # STEP 4: Setup Frontend (Static files served by PocketBase)
 COPY frontend/ /pb/pb_public/
 
-# STEP 5: Configure Supervisor
-# This configures Supervisor to start and monitor both PB and Node apps.
-# PocketBase handles Auth on 8090. Node handles calculations on 3000.
-RUN printf "[program:pocketbase]\ncommand=/pb/pocketbase serve --http=0.0.0.0:8090 --dir=/pb/pb_data --publicDir=/pb/pb_public\n\n[program:nodeapp]\ncommand=node index.js\n" > /etc/supervisord.conf
-
+# STEP 5: Configure Supervisor to run both processes
+# The [supervisord] section is mandatory for the manager to start.
+# nodaemon=true ensures the container doesn't exit immediately.
+RUN printf "[supervisord]\n\
+nodaemon=true\n\
+user=root\n\
+logfile=/dev/stdout\n\
+logfile_maxbytes=0\n\
+\n\
+[program:pocketbase]\n\
+command=/pb/pocketbase serve --http=0.0.0.0:8090 --dir=/pb/pb_data --publicDir=/pb/pb_public\n\
+autostart=true\n\
+autorestart=true\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+stderr_logfile=/dev/stderr\n\
+stderr_logfile_maxbytes=0\n\
+\n\
+[program:nodeapp]\n\
+command=node /app/index.js\n\
+autostart=true\n\
+autorestart=true\n\
+stdout_logfile=/dev/stdout\n\
+stdout_logfile_maxbytes=0\n\
+stderr_logfile=/dev/stderr\n\
+stderr_logfile_maxbytes=0\n\
+" > /etc/supervisord.conf
 # Expose both ports
 EXPOSE 8090 3000
 
