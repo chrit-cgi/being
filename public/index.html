@@ -1,71 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>Winterswijk Atlas - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winterswijk Atlas - Start</title>
     <script src="https://cdn.jsdelivr.net/npm/pocketbase/dist/pocketbase.umd.js"></script>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; }
-        .auth-card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; width: 300px; }
-        input { width: 100%; margin: 10px 0; padding: 10px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; cursor: pointer; background: #007bff; color: white; border: none; }
-        .hidden { display: none; }
+        body { font-family: system-ui; display: flex; justify-content: center; padding: 2rem; background: #f4f4f4; }
+        .card { background: white; padding: 2rem; border-radius: 12px; shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        input { width: 100%; padding: 0.8rem; margin: 1rem 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 0.8rem; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .status { margin-top: 1rem; font-size: 0.9rem; color: #666; }
     </style>
 </head>
 <body>
 
-<div class="auth-card">
-    <h2>Winterswijk Login</h2>
-    
-    <div id="step-email">
-        <input type="email" id="email" placeholder="Enter your email" required>
-        <button onclick="requestOTP()">Send Login Code</button>
+<div class="card">
+    <h1>Winterswijk Atlas</h1>
+    <div id="auth-section">
+        <p>Log in met je e-mail voor toegang.</p>
+        <input type="email" id="email" placeholder="jouw@email.nl">
+        <button onclick="requestOTP()">Verstuur Code</button>
     </div>
-
-    <div id="step-otp" class="hidden">
-        <p>Enter the 6-digit code sent to your email.</p>
-        <input 
-            type="text" 
-            id="otp" 
-            inputmode="numeric" 
-            pattern="[0-9]*" 
-            autocomplete="one-time-code" 
-            placeholder="000000"
-        >
-        <button onclick="verifyOTP()">Verify & Login</button>
-    </div>
+    <div id="status" class="status">Verbinden met PocketBase...</div>
 </div>
 
 <script>
-    //// const pb = new PocketBase('http://' + window.location.hostname + ':8090');
-    // This detects if you are on Sliplane (HTTPS) or Local (HTTP) 
-    // and removes the port 8090 if you are using Sliplane's main URL.
-    
+    // Detecteer automatisch de URL (werkt op Sliplane én lokaal)
     const pb = new PocketBase(window.location.origin);
+
+    // Check verbinding
+    async function checkHealth() {
+        try {
+            const health = await pb.health.check();
+            document.getElementById('status').innerText = "✅ Verbonden met PocketBase v" + health.version;
+        } catch (e) {
+            document.getElementById('status').innerText = "❌ Kan PocketBase niet bereiken.";
+        }
+    }
+    checkHealth();
 
     async function requestOTP() {
         const email = document.getElementById('email').value;
         try {
-            // This triggers the email from PocketBase
             await pb.collection('users').requestOTP(email);
-            document.getElementById('step-email').classList.add('hidden');
-            document.getElementById('step-otp').classList.remove('hidden');
-            alert("Check your email!");
-        } catch (err) {
-            alert("Error: " + err.message);
-        }
-    }
-
-    async function verifyOTP() {
-        const email = document.getElementById('email').value;
-        const code = document.getElementById('otp').value;
-        try {
-            const authData = await pb.collection('users').authWithOTP(email, code);
-            alert("Logged in as: " + authData.record.email);
-            // After login, you can now call your Node.js API on port 3000
-            // sending authData.token in the headers!
-        } catch (err) {
-            alert("Invalid code.");
+            alert("Check je mail (of de Sliplane logs) voor de code!");
+        } catch (e) {
+            alert("Fout: " + e.message);
         }
     }
 </script>

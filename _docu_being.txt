@@ -30,9 +30,10 @@ github: chrit-cgi / chrit@cgintelligence.eu
 web server at Sliplane
 
 - services activeren
-- database url (uit internal settings) toevoegen bij setiings
+- database url (uit internal settings) toevoegen bij settings
 
-  postgres://[user]:[pass]@[internal endpoint]/[dbname]
+  postgres://[user]:[pass]@[Public endpoint]/[dbname]
+
 
 
 een aantal zaken opgeslagen in ~/.git-credentials
