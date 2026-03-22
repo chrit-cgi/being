@@ -11,7 +11,7 @@ RUN apk add --no-cache unzip ca-certificates supervisor curl
 ARG PB_VERSION=0.36.7
 ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip /tmp/pb.zip
 RUN unzip /tmp/pb.zip -d /pb/
-RUN mkdir -p /pb/pb_data
+RUN mkdir -p /pb/pb_data_v0
 
 # STEP 3: Install Node.js Backend (The Calculation Engine)
 WORKDIR /app
