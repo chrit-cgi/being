@@ -17,17 +17,8 @@ COPY public/ /pb/pb_public/
 EXPOSE 8090
 
 # Start PocketBase. 
-# We gebruiken /pb/pb_data. Zorg dat je in Sliplane een volume 
-# koppelt aan dit pad voor persistentie.
-# CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb/pb_data", "--publicDir=/pb/pb_public"]
+# We gebruiken standaard /pb/pb_data. Zorg dat je in Sliplane een volume 
 
-# We gebruiken de variabele $PORT die Sliplane aanlevert. 
-# Als die er niet is, valt hij terug op 8090.
-# CMD ["sh", "-c", "/pb/pocketbase serve --http=0.0.0.0:${PORT:-8090} --dir=/pb/pb_data --publicDir=/pb/pb_public"]
-
-# We gebruiken 'sh -c' om twee commando's achter elkaar uit te voeren:
-# 1. Verwijder de oude database (forceer de schone start)
-# 2. Maak de nieuwe admin aan
-# 3. Start de server
-CMD ["sh", "-c", "rm-rf /pb/pb_data/* && /pb/pocketbase admin create chrit@cgintelligence.eu 898tmp323 || true && /pb/pocketbase serve --http=0.0.0.0:8090 --dir=/pb/pb_data --publicDir=/pb/pb_public"]
-
+# We veranderen het pad naar 'pb_data_final_v1' 
+# Omdat dit pad nieuw is, is de map leeg en MOET PocketBase de 'Create Admin' tonen.
+CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb/pb_data_final_v1", "--publicDir=/pb/pb_public"]
