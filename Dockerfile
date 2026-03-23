@@ -10,7 +10,7 @@ RUN apk add --no-cache unzip ca-certificates curl
 # /tmp/pb.zip
 
 ADD
-https://github.com/pocketbase/pocketbase/releases#:~:text=pocketbase_0.36.7_linux_arm64.zip
+https://github.com/pocketbase/pocketbase/releases/download/v0.36.7/pocketbase_0.36.7_linux_arm64.zip
 /tmp/pb.zip
 
 RUN unzip /tmp/pb.zip -d /pb/
