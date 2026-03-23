@@ -23,7 +23,7 @@ EXPOSE 8090
 
 # We gebruiken de variabele $PORT die Sliplane aanlevert. 
 # Als die er niet is, valt hij terug op 8090.
-CMD ["sh", "-c", "/pb/pocketbase serve --http=0.0.0.0:${PORT:-8090} --dir=/pb/pb_data --publicDir=/pb/pb_public"]
+# CMD ["sh", "-c", "/pb/pocketbase serve --http=0.0.0.0:${PORT:-8090} --dir=/pb/pb_data --publicDir=/pb/pb_public"]
 
 # We gebruiken 'sh -c' om twee commando's achter elkaar uit te voeren:
 # 1. Maak de admin aan (PocketBase negeert dit als de admin al bestaat)
