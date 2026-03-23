@@ -1,6 +1,17 @@
 _docu_being.txt
 
 
+
+
+TWEEDE RONDE
+in Dockerfile ARG PB_VERSION=0.36.7   <-- higher version than suggested by G
+
+while connecting repository in Sliplane: take care of access
+
+in environmental Variables add: PORT 8090
+
+
+EERSTE RONDE
 local:
 /being
      npm create vite@latest   <-- template vanilla, namne it frontend
@@ -33,6 +44,7 @@ web server at Sliplane
 - database url (uit internal settings) toevoegen bij settings
 
   postgres://[user]:[pass]@[Public endpoint]/[dbname]
+
 
 
 
