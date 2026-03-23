@@ -18,4 +18,4 @@ EXPOSE 8090
 
 # Start PocketBase. 
 # We gebruiken standaard /pb/pb_data. Zorg dat je in Sliplane een volume met die naam hebt
-CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb/pb_data", "--publicDir=/pb/pb_public"]
+CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/doemaarwatdata", "--publicDir=/pb/pb_public"]
