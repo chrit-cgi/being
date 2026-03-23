@@ -32,10 +32,13 @@
     // Check verbinding
     async function checkHealth() {
         try {
+            // We checken simpelover de verbinding
             const health = await pb.health.check();
-            document.getElementById('status').innerText = "✅ Verbonden met PocketBase v" + health.version;
+            // In v0.22+ zit de versie vaak in health.code of health.message
+            document.getElementById('status').innerText = "✅ Verbonden met PocketBase (Sliplane)";
+            console.log("Health check details:", health);
         } catch (e) {
-            document.getElementById('status').innerText = "❌ Kan PocketBase niet bereiken.";
+            document.getElementById('status').innerText = "❌ Kan PocketBase niet bereiken: " + e.message;
         }
     }
     checkHealth();
@@ -51,5 +54,6 @@
     }
 </script>
 
+    
 </body>
 </html>
