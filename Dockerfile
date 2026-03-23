@@ -24,4 +24,3 @@ EXPOSE 8090
 # koppelt aan dit pad voor persistentie.
 CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb/pb_data", "--publicDir=/pb/pb_public"]
 
-
