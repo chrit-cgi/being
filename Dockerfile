@@ -17,8 +17,5 @@ COPY public/ /pb/pb_public/
 EXPOSE 8090
 
 # Start PocketBase. 
-# We gebruiken standaard /pb/pb_data. Zorg dat je in Sliplane een volume 
-
-# We veranderen het pad naar 'pb_data_final_v1' 
-# Omdat dit pad nieuw is, is de map leeg en MOET PocketBase de 'Create Admin' tonen.
-CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb/pb_data_final_v1", "--publicDir=/pb/pb_public"]
+# We gebruiken standaard /pb/pb_data. Zorg dat je in Sliplane een volume met die naam hebt
+CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb/pb_data", "--publicDir=/pb/pb_public"]
