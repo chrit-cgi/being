@@ -8,7 +8,10 @@ const dbPath = isProd
     : path.resolve(process.cwd(), "dev.db"); // Je lokale plek op Chromebook
 
 export const auth = betterAuth({
-    database: new Database(dbPath),
+    database: new Database(dbPath, {
+      // Dit zorgt ervoor dat sqlite niet crasht als de map er nog niet is tijdens build
+      fileMustExist: false, 
+    }),
     emailAndPassword: {
         enabled: true
     },
