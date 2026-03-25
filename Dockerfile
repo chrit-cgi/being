@@ -12,6 +12,7 @@ RUN npm install
 # 2. Build the app
 FROM base AS builder
 WORKDIR /app
+RUN mkdir -p /app/data
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # Next.js build stap
