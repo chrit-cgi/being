@@ -13,7 +13,10 @@ export const auth = betterAuth({
         // Deze wordt pas uitgevoerd als de app ECHT draait, 
         // dus NOOIT tijdens de build-stap op Sliplane.
         const db = new Database(dbPath);
-        return ( db )
+        return {
+            db: db,
+            type: "sqlite"
+        };
     },
     emailAndPassword: {
         enabled: true
