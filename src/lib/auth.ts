@@ -8,6 +8,16 @@ const dbPath = isProd
     ? "/app/data/prod.db"  // De veilige plek in Docker
     : path.resolve(process.cwd(), "dev.db"); // Je lokale plek op Chromebook
 
+// DIT IS DE EXTRA VEILIGHEID:
+// Als we in productie zijn en de map bestaat nog niet (tijdens build), 
+// maken we hem even aan of we gebruiken een tijdelijke plek.
+if (isProd) {
+    const dbDir = path.dirname(dbPath);
+    if (!fs.existsSync(dbDir)) {
+        fs.mkdirSync(dbDir, { recursive: true });
+    }
+}
+
 const db = new Database(dbPath, {
     fileMustExist: false 
 });
