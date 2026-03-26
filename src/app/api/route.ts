@@ -60,7 +60,7 @@ export async function GET() {
         `);
 
         // 3. OPTIONEEL: Jezelf direct admin maken als je email al bekend is
-        // db.prepare("UPDATE user SET role = 'admin' WHERE email = 'lucy@lucy.eu'").run();
+        db.prepare("UPDATE user SET role = 'admin' WHERE email = 'lucy@lucy.eu'").run();
 
         db.close();
         return NextResponse.json({ message: "Database tabellen succesvol aangemaakt!" });
