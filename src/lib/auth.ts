@@ -8,12 +8,9 @@ const dbPath = isProd
     ? "/app/data/prod.db"  // De veilige plek in Docker
     : path.resolve(process.cwd(), "dev.db"); // Je lokale plek op Chromebook
 
-const db = new Database(dbPath);
-
 const db = new Database(dbPath, {
     fileMustExist: false 
 });
-
 
 export const auth = betterAuth({
     database: db,
