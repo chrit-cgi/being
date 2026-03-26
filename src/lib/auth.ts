@@ -13,6 +13,9 @@ const db = new Database(dbPath);
 export const auth = betterAuth({
     database: db,
     baseURL: process.env.BETTER_AUTH_URL,
+    plugins: [
+        admin() 
+    ],
     emailAndPassword: {
         enabled: true
     },
@@ -22,6 +25,6 @@ export const auth = betterAuth({
         runMigrations: true 
     },
     trustedOrigins: [`http://localhost:3000`, `https://being.sliplane.app` ],
-    secret: process.env.BETTER_AUTH_SECRET,
+    secret: process.env.BETTER_AUTH_SECRET || "fallback-secret-voor-local",
 });
 
