@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import Database from "better-sqlite3";
 import { admin } from "better-auth/plugins";
 import path from "path";
+import fs from "fs"; // VOEG DEZE REGEL TOE
 
 const isProd = process.env.NODE_ENV === "production";
 const dbPath = isProd 
