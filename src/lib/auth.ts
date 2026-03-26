@@ -10,6 +10,11 @@ const dbPath = isProd
 
 const db = new Database(dbPath);
 
+const db = new Database(dbPath, {
+    fileMustExist: false 
+});
+
+
 export const auth = betterAuth({
     database: db,
     baseURL: process.env.BETTER_AUTH_URL,
