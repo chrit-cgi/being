@@ -45,7 +45,17 @@ const signUp = async (e: React.FormEvent) => {
       email,
       password,
     });
-    alert("Logged in!");
+    if (res.error) {
+      alert(res.error.message);
+    } else {
+      // Gebruik window.location voor een harde reload op Sliplane
+      // Dit zorgt dat de cookies zeker worden meegestuurd
+
+      console.log( "Logged in! Op weg naar dashboard");
+
+      window.location.href = "/dashboard";
+    }
+    
   };
 
   return (

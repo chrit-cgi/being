@@ -36,6 +36,13 @@ export const auth = betterAuth({
         cookiePrefix: "being-app", // Helpt om conflicten te voorkomen
         useSecureCookies: true,    // Verplicht voor https (Sliplane)
     },
+    // Dit helpt bij Next.js 15 om sessies stabieler te houden
+    session: {
+        cookieCache: {
+            enabled: true,
+            maxAge: 5 * 60 // 5 minuten
+        }
+    },
     // Dit zorgt ervoor dat de tabellen op Sliplane ook 
     // automatisch worden aangemaakt bij de eerste start
     databaseHooks: {
