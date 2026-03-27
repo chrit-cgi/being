@@ -6,7 +6,7 @@ import fs from "fs"; // VOEG DEZE REGEL TOE
 
 const isProd = process.env.NODE_ENV === "production";
 const dbPath = isProd 
-    ? "/app/data/prod.db"  // De veilige plek in Docker
+    ? "/app/data/db/prod.db"  // De veilige plek in Docker
     : path.resolve(process.cwd(), "dev.db"); // Je lokale plek op Chromebook
 
 // DIT IS DE EXTRA VEILIGHEID:
