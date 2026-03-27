@@ -41,21 +41,18 @@ const signUp = async (e: React.FormEvent) => {
   };
 
   const signIn = async () => {
-    await authClient.signIn.email({
+    const res = await authClient.signIn.email({
       email,
       password,
     });
+
     if (res.error) {
       alert(res.error.message);
     } else {
       // Gebruik window.location voor een harde reload op Sliplane
       // Dit zorgt dat de cookies zeker worden meegestuurd
-
-      console.log( "Logged in! Op weg naar dashboard");
-
       window.location.href = "/dashboard";
     }
-    
   };
 
   return (
