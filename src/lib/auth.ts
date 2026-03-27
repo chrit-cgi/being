@@ -32,6 +32,10 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true
     },
+    advanced: {
+        cookiePrefix: "being-app", // Helpt om conflicten te voorkomen
+        useSecureCookies: true,    // Verplicht voor https (Sliplane)
+    },
     // Dit zorgt ervoor dat de tabellen op Sliplane ook 
     // automatisch worden aangemaakt bij de eerste start
     databaseHooks: {
