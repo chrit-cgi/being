@@ -28,15 +28,17 @@ export async function GET() {
         // 3. Open de database
         const db = new Database(dbPath);
         
-        // 4. Test of we echt kunnen schrijven
-        db.exec("PRAGMA journal_mode = WAL;"); // WAL mode helpt bij SQLite schrijffouten
-        
         db.exec(`
             CREATE TABLE IF NOT EXISTS user (
                 id TEXT PRIMARY KEY,
                 email TEXT NOT NULL UNIQUE,
-                role TEXT DEFAULT 'user'
+                role TEXT DEFAULT 'user',
+                name TEXT,
+                emailVerified BOOLEAN,
+                createdAt DATETIME,
+                updatedAt DATETIME
             );
+            -- Voeg hier ook session en account toe zoals eerder
         `);
 
         db.close();
@@ -46,9 +48,6 @@ export async function GET() {
             path: dbPath 
         });
     } catch (error: any) {
-        return NextResponse.json({ 
-            error: error.message,
-            instruction: "Als dit blijft falen, moet de map /app/data in Sliplane handmatig op 777 gezet worden of de eigenaar moet aangepast worden."
-        }, { status: 500 });
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

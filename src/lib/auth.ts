@@ -5,18 +5,15 @@ import path from "path";
 import fs from "fs"; // VOEG DEZE REGEL TOE
 
 const isProd = process.env.NODE_ENV === "production";
+// We zetten de db direct in de root van de app-folder, maar met een punt ervoor
 const dbPath = isProd 
-    ? "/app/data/db/prod.db"  // De veilige plek in Docker
-    : path.resolve(process.cwd(), "dev.db"); // Je lokale plek op Chromebook
+    ? path.resolve(process.cwd(), ".data", "prod.db") 
+    : path.resolve(process.cwd(), "dev.db");
 
-// DIT IS DE EXTRA VEILIGHEID:
-// Als we in productie zijn en de map bestaat nog niet (tijdens build), 
-// maken we hem even aan of we gebruiken een tijdelijke plek.
-if (isProd) {
-    const dbDir = path.dirname(dbPath);
-    if (!fs.existsSync(dbDir)) {
-        fs.mkdirSync(dbDir, { recursive: true });
-    }
+// Zorg dat de map bestaat (sync zodat het klaar is voor de Database aanroep)
+const dbDir = path.dirname(dbPath);
+if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
 }
 
 const db = new Database(dbPath, {
