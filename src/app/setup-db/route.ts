@@ -1,4 +1,3 @@
-import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import Database from "better-sqlite3";
 import path from "path";
@@ -8,16 +7,28 @@ export async function GET() {
     try {
         const isProd = process.env.NODE_ENV === "production";
         const dbPath = isProd ? "/app/data/prod.db" : path.resolve(process.cwd(), "dev.db");
-        
-        // 1. Zorg dat de map bestaat
         const dbDir = path.dirname(dbPath);
+
+        // 1. Check of de map bestaat, zo niet maak hem aan
         if (!fs.existsSync(dbDir)) {
             fs.mkdirSync(dbDir, { recursive: true });
         }
 
-        const db = new Database(dbPath);
+        // 2. FORCEER RECHTEN (Alleen voor Linux/Sliplane)
+        // We proberen de map schrijfbaar te maken voor iedereen in de container
+        try {
+            fs.chmodSync(dbDir, 0o777); 
+            if (fs.existsSync(dbPath)) {
+                fs.chmodSync(dbPath, 0o666);
+            }
+        } catch (e) {
+            console.log("Rechten aanpassen mislukt, we gaan door...");
+        }
 
-        // 2. Voer de SQL uit om de tabellen te maken
+        // 3. Open de database met expliciete lees/schrijf rechten
+        const db = new Database(dbPath, { timeout: 5000 });
+
+        // 4. Voer de tabellen uit
         db.exec(`
             CREATE TABLE IF NOT EXISTS user (
                 id TEXT PRIMARY KEY,
@@ -59,12 +70,14 @@ export async function GET() {
             );
         `);
 
-        // 3. OPTIONEEL: Jezelf direct admin maken als je email al bekend is
-        db.prepare("UPDATE user SET role = 'admin' WHERE email = 'lucy@lucy.eu'").run();
-
         db.close();
-        return NextResponse.json({ message: "Database tabellen succesvol aangemaakt!" });
+        return NextResponse.json({ message: "Database is nu beschrijfbaar en tabellen zijn aangemaakt!" });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        console.error("Setup error:", error);
+        return NextResponse.json({ 
+            error: error.message, 
+            stack: error.stack,
+            path: path.resolve("/app/data") 
+        }, { status: 500 });
     }
 }
